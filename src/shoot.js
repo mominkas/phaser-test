@@ -16,7 +16,7 @@ var config = {
     }
 };
 
-let game = new Phaser.Game(config); //creates instance of Phaser Game and wakes up the library
+var game = new Phaser.Game(config); //creates instance of Phaser Game and wakes up the library
 let player;
 let alien;
 let shot;
@@ -37,12 +37,12 @@ let gameover = false;
 function preload ()
 {
     this.load.image('background', 'assets/background.png');
-    this.load.image('crosshair', 'assets/crosshair (1).png');
+    this.load.image('crosshair', 'assets/FinalCross2.png');
     this.load.audio('shot', 'assets/shootingAudio.mp3');
     this.load.audio('hitsound', 'assets/short-explosion.wav');
     this.load.audio('backgroundmusic', 'assets/backgroundmusic.mp3')
     this.load.spritesheet('explosion', 'assets/try-explosion.png', {frameWidth: 120, frameHeight: 100 });
-    this.load.spritesheet('alien', 'assets/necro.png', {frameWidth: 225, frameHeight: 100 });
+    this.load.spritesheet('alien', 'assets/final-final-necro.png', {frameWidth: 160, frameHeight: 100 });
 }
 
 function create ()
@@ -50,27 +50,27 @@ function create ()
     this.add.image(400, 300, 'background');
     scoreText = this.add.text(16, 16, 'score: 0', { fontSize: '32px', fill: '#000' });
     timerText = this.add.text(600, 16, 'timer: 0', { fontSize: '32px', fill: '#000' });
-    alien = this.physics.add.sprite(200, 150, 'alien');
+    alien = this.physics.add.sprite(200, 450, 'alien');
     alien.setCollideWorldBounds(true);
     player = this.physics.add.sprite(400, 300, 'crosshair');
     player.setCollideWorldBounds(true);
 
     cursors = this.input.keyboard.createCursorKeys();
-    enter = this.input.keyboard.addKey(Phaser.Input.Keyboard.KeyCodes.ENTER);
+    enter = this.input.keyboard.addKey(Phaser.Input.Keyboard.KeyCodes.SPACE);
     shot = this.sound.add('shot');
     backgroundmusic = this.sound.add('backgroundmusic');
     hitsound = this.sound.add('hitsound')
 
     this.anims.create({
         key: 'cycle',
-        frames: this.anims.generateFramenumbers('alien', {start: 0, end: 5}),
-        frameRate: 10,
+        frames: this.anims.generateFrameNumbers('alien', {start: 0, end: 8}),
+        frameRate: 5,
         repeat: -1
     });
 
     this.anims.create({
         key: 'explode',
-        frames: this.anims.generateFramenumbers('explosion', {start: 0, end: 4}),
+        frames: this.anims.generateFrameNumbers('explosion', {start: 0, end: 4}),
         frameRate: 10,
         repeat: 0
     });
@@ -87,61 +87,68 @@ function create ()
     }, 1000);
 }
 
- function update()
+function update()
 {
     if(gameover){
         return;
     }
 
     //AlienMovement
-    if(alien.x >= 750){
-        alien.x = 749;
+    if(alien.x >= 720){
+        alien.x = 719;
         alienXSpeed = alienXSpeed * (-1);
-        alien.setVelocityX(alienXSpeed);
+        alien.setVelocityX(alienXSpeed);}
+        else if(alien.x <= 80){
+            alien.x = 81;
+            alienXSpeed = alienXSpeed * (-1);
+            alien.setVelocityX(alienXSpeed);
     } else {
             alien.x = alien.x + alienXSpeed;
 
     }
 
-    if(alien.x <=50){
-        alien.x = 51;
-        alienXSpeed = alienXSpeed * (-1);
-        alien.setVelocityX(alienXSpeed);
-    }  else {
-        alien.x = alien.x + alienXSpeed;
-    }
+  //  if(alien.x <= -50){
+  //      alien.x = -49;
+  //      alienXSpeed = alienXSpeed * (-1);
+  //      alien.setVelocityX(alienXSpeed);
+  //  }  else {
+  //      alien.x = alien.x + alienXSpeed;
+  //  }
 
-    if(alien.y >= 550){
-        alien.y = 549;
+    if(alien.y >= 520){
+        alien.y = 519;
         alienYSpeed = alienYSpeed * (-1);
         alien.setVelocityY(alienYSpeed);
-    } else {
-            alien.y = alien.y + alienYSpeed;
-    }
-
-    if(alien.y >= 50){
-        alien.y = 51;
+    } else if(alien.y <= 80){
+        alien.y = 81;
         alienYSpeed = alienYSpeed * (-1);
-        alien.setVelocityY(alienYSpeed);
-    } else {
-            alien.y = alien.y + alienYSpeed;
-    }
+        alien.setVelocityY(alienYSpeed);}
+        else {
+           alien.y = alien.y + alienYSpeed;}
+
+ //  if(alien.y <= -50){
+ //       alien.y = -49;
+ //      alienYSpeed = alienYSpeed * (-1);
+ //       alien.setVelocityY(alienYSpeed);
+ //   } else {
+ //           alien.y = alien.y + alienYSpeed;
+ //   }
 
     //Cursor Movement
 
-    if(cursor.left.isDown){
+    if(cursors.left.isDown){
         xSpeed = xSpeed - ACCEL
         player.setVelocityX(xSpeed);
     }
-    if(cursor.right.isDown){
+    if(cursors.right.isDown){
         xSpeed = xSpeed + ACCEL
         player.setVelocityX(xSpeed);
     }
-    if(cursor.up.isDown){
+    if(cursors.up.isDown){
         ySpeed = ySpeed - ACCEL
         player.setVelocityY(ySpeed);
     }
-    if(cursor.down.isDown){
+    if(cursors.down.isDown){
         ySpeed = ySpeed + ACCEL
         player.setVelocityY(ySpeed);
     }
@@ -180,7 +187,7 @@ function miss(){
 
 }
 
-function reserPlayer(){
+function resetPlayer(){
     player.x = 400;
     player.y = 300;
     player.setVelocityX(0);
